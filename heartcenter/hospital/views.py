@@ -5,7 +5,15 @@ from rest_framework import status, permissions
 from .serializers import *
 from .models import *
 from django.shortcuts import get_object_or_404
-import time
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from knox.auth import AuthToken
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+
+# from knox.auth import AuthToken
+# from rest_framework import generics
+# from .serializers import ChangePasswordSerializer
+# from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -196,7 +204,7 @@ class BedViews(APIView):
 
 class PatientViews(APIView):
     def post(self, request):
-        serializer = PatientSerilizer(data=request.data)
+        serializer = PatientPostSerilizer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -227,7 +235,7 @@ class PatientViews(APIView):
 
     def put(self, request, id=None):
         patient = Patient.objects.get(id=id)
-        serializer = PatientSerilizer(
+        serializer = PatientPostSerilizer(
             patient, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -239,3 +247,62 @@ class PatientViews(APIView):
         patient = get_object_or_404(Patient, id=id)
         patient.delete()
         return Response({"status": "success", "data": "Item Deleted"})
+
+
+@api_view(['POST'])
+def register_api(request):
+
+    serializer = RegisterSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    user = serializer.save()
+    _, token = AuthToken.objects.create(user)
+
+    return Response({
+        'user_info': {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+        },
+        'token': token
+    })
+
+@api_view(['POST'])
+def login_api(request):
+    serializer = AuthTokenSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    user = serializer.validated_data['user']
+
+    _, token = AuthToken.objects.create(user)
+
+    return Response({
+        'user_info': {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+        },
+        'token': token
+    })
+
+
+
+@api_view(['GET'])
+def get_user_data(request):
+    user = request.user
+
+    if user.is_authenticated:
+        return Response({
+            'user_info': {
+                'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'username': user.username,
+                'email': user.email,
+                'is_superuser': user.is_superuser,
+                'is_staff': user.is_staff,
+                'is_active': user.is_active,
+            },
+        })
+    else:
+        return Response({'error': 'not authenticated'}, status=400)
+

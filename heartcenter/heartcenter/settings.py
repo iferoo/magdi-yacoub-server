@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     #packages
     'rest_framework',
     'corsheaders',
+    'knox',
+
 ]
 
 MIDDLEWARE = [

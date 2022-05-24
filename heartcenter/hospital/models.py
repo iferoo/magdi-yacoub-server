@@ -1,5 +1,4 @@
 from django.db import models
-
 # Create your models here.
 
 
@@ -7,8 +6,6 @@ class Room(models.Model):
     Name = models.CharField(max_length=70, null=True)
 
 class Bed(models.Model):
-    Number = models.CharField(max_length=70)
-    Status = models.CharField(max_length=70)
     RoomID = models.ForeignKey(Room, related_name='Beds', on_delete=models.CASCADE)
 
 class Doctor(models.Model):
@@ -39,5 +36,5 @@ class Patient(models.Model):
     Disease = models.CharField(max_length=70, null=True)
     History = models.CharField(max_length=70, null=True)
     OtherDiseases = models.CharField(max_length=70, null=True)
-    Diabeyic = models.CharField(max_length=70, null=True)
-    Smoker = models.CharField(max_length=70, null=True)
+    Diabeyic = models.BooleanField(max_length=70, null=True)
+    Smoker = models.BooleanField(max_length=70, null=True)
