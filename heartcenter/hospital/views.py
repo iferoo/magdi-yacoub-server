@@ -17,6 +17,7 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 
 # Create your views here.
 
+
 class DoctorViews(APIView):
     def post(self, request):
         serializer = DoctorSerilizer(data=request.data)
@@ -110,6 +111,7 @@ class NurseViews(APIView):
         nurse.delete()
         return Response({"status": "success", "data": "Item Deleted"})
 
+
 class RoomViews(APIView):
     def post(self, request):
         serializer = RoomSerilizer(data=request.data)
@@ -155,7 +157,8 @@ class RoomViews(APIView):
         room = get_object_or_404(Room, id=id)
         room.delete()
         return Response({"status": "success", "data": "Item Deleted"})
-    
+
+
 class BedViews(APIView):
     def post(self, request):
         serializer = BedSerilizer(data=request.data)
@@ -201,6 +204,7 @@ class BedViews(APIView):
         bed = get_object_or_404(Bed, id=id)
         bed.delete()
         return Response({"status": "success", "data": "Item Deleted"})
+
 
 class PatientViews(APIView):
     def post(self, request):
@@ -267,6 +271,7 @@ def register_api(request):
         'token': token
     })
 
+
 @api_view(['POST'])
 def login_api(request):
     serializer = AuthTokenSerializer(data=request.data)
@@ -283,7 +288,6 @@ def login_api(request):
         },
         'token': token
     })
-
 
 
 @api_view(['GET'])
@@ -305,4 +309,3 @@ def get_user_data(request):
         })
     else:
         return Response({'error': 'not authenticated'}, status=400)
-

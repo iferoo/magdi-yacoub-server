@@ -5,22 +5,26 @@ from django.contrib.auth.hashers import make_password
 
 
 class PatientSerilizer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Patient
         fields = "__all__"
         depth = 2
 
+
 class PatientPostSerilizer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Patient
         fields = "__all__"
+
+
 class DoctorSerilizer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
         fields = "__all__"
         depth = 1
+
 
 class NurseSerilizer(serializers.ModelSerializer):
 
@@ -29,16 +33,20 @@ class NurseSerilizer(serializers.ModelSerializer):
         fields = "__all__"
         depth = 1
 
+
 class BedSerilizer(serializers.ModelSerializer):
     Patient = PatientSerilizer(read_only=True)
+
     class Meta:
         model = Bed
         # fields = ['id', 'Number', 'Status', 'Patient']
         fields = "__all__"
         # depth = 1
 
+
 class RoomSerilizer(serializers.ModelSerializer):
     Beds = BedSerilizer(read_only=True, many=True)
+
     class Meta:
         model = Room
         fields = "__all__"
@@ -91,7 +99,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'first_name', 'last_name', 'is_superuser', 'is_staff', 'is_active')
+        fields = ('username', 'password', 'email', 'first_name',
+                  'last_name', 'is_superuser', 'is_staff', 'is_active')
 
         extra_kwargs = {
             "password": {"write_only": True},
